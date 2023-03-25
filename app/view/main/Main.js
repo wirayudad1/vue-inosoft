@@ -10,9 +10,10 @@ Ext.define('Testing.view.main.Main', {
     initComponent () {
         let me=this;
         Ext.apply(this, {
-            layout: 'fit',
+            layout: 'vbox',
             items: [
-                this.createList()
+                this.createList(),
+                this.createGrid()
             ],
             // bbar:[
             //     '->',
@@ -55,6 +56,8 @@ Ext.define('Testing.view.main.Main', {
                 {
                     xtype:'combobox',
                     store:storeCombobox,
+                    fieldStyle: 'background-color: #F1F1F1;padding:8px;',
+                    cls:'comboArrow',
                     margin:8,
                     width:'10%',
                     padding:8,
@@ -79,7 +82,7 @@ Ext.define('Testing.view.main.Main', {
             ]
         });
         let form=Ext.create('Ext.form.Panel',{
-            title:`<div style="color:#545454;width:120px; background-color:#E5E5E5;text-align:center; font-weight:bold;border-radius:10px;padding:4px;">Draft</div>`,
+            title:`<div style="color:#545454;width:160px; background-color:#E5E5E5;text-align:center; font-weight:bold;border-radius:10px;padding:4px;">Draft</div>`,
             width:'90%',
             layout:{
                 type:'form'
@@ -105,6 +108,8 @@ Ext.define('Testing.view.main.Main', {
                                     xtype:'combobox',
                                     store:storeCombobox,
                                     labelAlign:'top',
+                                    fieldStyle: 'background-color: #F1F1F1;padding:8px;',
+                                    cls:'comboArrow',
                                     width:'25%',
                                     fieldLabel:'Assigned Vendor',
                                     margin:8,
@@ -118,6 +123,7 @@ Ext.define('Testing.view.main.Main', {
                                     xtype:'textfield',
                                     labelAlign:'top',
                                     fieldLabel:'Attention Of',
+                                    fieldStyle: 'background-color: #F1F1F1;padding:8px;',
                                     width:'25%',
                                     margin:8,
                                     padding:8,
@@ -127,6 +133,7 @@ Ext.define('Testing.view.main.Main', {
                                 {
                                     xtype:'textfield',
                                     labelAlign:'top',
+                                    fieldStyle: 'background-color: #F1F1F1;padding:8px;',
                                     width:'25%',
                                     fieldLabel:'Quotation No',
                                     margin:8,
@@ -138,6 +145,8 @@ Ext.define('Testing.view.main.Main', {
                                     xtype:'combobox',
                                     store:storeCombobox,
                                     labelAlign:'top',
+                                    fieldStyle: 'background-color: #F1F1F1;padding:8px;',
+                                    cls:'comboArrow',
                                     fieldLabel:'Invoice To',
                                     width:'25%',
                                     margin:8,
@@ -159,6 +168,8 @@ Ext.define('Testing.view.main.Main', {
                                 {
                                     xtype:'combobox',
                                     store:storeCombobox,
+                                    fieldStyle: 'background-color: #F1F1F1;padding:8px;',
+                                    cls:'comboArrow',
                                     labelAlign:'top',
                                     width:'100%',
                                     fieldLabel:'Customer Contract',
@@ -194,6 +205,7 @@ Ext.define('Testing.view.main.Main', {
                                     xtype:'textfield',
                                     labelAlign:'top',
                                     fieldLabel:'Vendor Address',
+                                    fieldStyle: 'background-color: #F1F1F1;padding:8px;',
                                     width:'100%',
                                     margin:8,
                                     padding:8,
@@ -216,6 +228,8 @@ Ext.define('Testing.view.main.Main', {
                                     labelAlign:'top',
                                     width:'100%',
                                     fieldLabel:'Customer PO No.',
+                                    fieldStyle: 'background-color: #F1F1F1;padding:8px;',
+                                    cls:'comboArrow',
                                     margin:8,
                                     padding:8,
                                     value:'2',
@@ -232,5 +246,97 @@ Ext.define('Testing.view.main.Main', {
         })
         return form
 
+    },
+    createGrid(){
+        let me=this;
+        let storeGrid= Ext.create('Ext.data.Store', {
+            fields:['description','qry','uom','unit_pr','discount','VAT_1',''],
+            data : [
+                {description: 'Description',    qty: '1'},
+                {description: 'Description',    qty: '2'},
+
+            ]
+        });
+        let columns=[
+            {
+                text:'Description',
+                editor: me.createText(),              
+                dataIndex:'description',
+                width:130,
+                renderer(value){
+                    return `<div style="color:#545454;background-color:#E5E5E5;text-align:center;border-radius:3px;padding:4px;">${value}</div>`
+                }
+            },
+            {
+                text:'Qty',
+                width:'5%',
+            },
+            {
+                text:'UOM',
+                width:'6%',
+            },
+            {
+                text:'Unit Price',
+                width:'8%',
+            },
+        
+            {
+                text:'Discount (%)',
+                width:'10%',
+            },
+            {
+                text:'VAT (%)',
+                width:'5%',
+            },
+            {
+                text:'',
+                width:'4%',
+            },
+            {
+                text:'Currency',
+                width:'10%',
+            },
+            {
+                text:'VAT Amount',
+                width:'10%',
+            },
+            {
+                text:'Sub Total',
+                width:'10%',
+            },
+            {
+                text:'Total',
+                width:'6%',
+            },
+            {
+                text:'Charge To',
+                width:'10%',
+            },
+            {
+                text:'',
+                width:'5%',
+            },
+
+        ]
+        let grid=Ext.create('Ext.grid.Panel',{
+            width:'100%',
+            cls:'gridColumn',
+            columns:columns,
+            store:storeGrid,
+            plugins: {
+                ptype: 'cellediting',
+                clicksToEdit: 1,
+              
+            },
+            
+        })
+        return grid
+    },
+    createText(){
+        let textfield=Ext.create('Ext.form.field.Text',{
+            fieldStyle: 'background-color: #F1F1F1;margin:0px;',
+            emptyText:'Description',
+        })
+        return textfield
     }
 });
