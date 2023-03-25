@@ -56,6 +56,7 @@ Ext.define('Testing.view.main.Main', {
                     xtype:'combobox',
                     store:storeCombobox,
                     margin:8,
+                    width:'10%',
                     padding:8,
                     value:'2',
                     displayField:'name',
@@ -79,6 +80,7 @@ Ext.define('Testing.view.main.Main', {
         });
         let form=Ext.create('Ext.form.Panel',{
             title:`<div style="color:#545454;width:120px; background-color:#E5E5E5;text-align:center; font-weight:bold;border-radius:10px;padding:4px;">Draft</div>`,
+            width:'90%',
             layout:{
                 type:'form'
             },
@@ -86,51 +88,89 @@ Ext.define('Testing.view.main.Main', {
                 {
                     xtype:'panel',
                     layout:{
-                        type:'hbox'
+                        type:'hbox',
                     },
                     items:[
                         {
-                            xtype:'combobox',
-                            store:storeCombobox,
-                            labelAlign:'top',
-                            fieldLabel:'Assigned Vendor',
-                            margin:8,
-                            padding:8,
-                            value:'2',
-                            displayField:'name',
-                            valueField:'id'
-                            
+                            xtype:'panel',
+                            width:'80%',
+                            style:{
+                                'border-right':'1px dotted',
+                            },  
+                            layout:{
+                                type:'hbox'
+                            },
+                            items:[
+                                {
+                                    xtype:'combobox',
+                                    store:storeCombobox,
+                                    labelAlign:'top',
+                                    width:'25%',
+                                    fieldLabel:'Assigned Vendor',
+                                    margin:8,
+                                    padding:8,
+                                    value:'2',
+                                    displayField:'name',
+                                    valueField:'id'
+                                    
+                                },
+                                {
+                                    xtype:'textfield',
+                                    labelAlign:'top',
+                                    fieldLabel:'Attention Of',
+                                    width:'25%',
+                                    margin:8,
+                                    padding:8,
+                                    value:'John Smith ',
+                                    
+                                },
+                                {
+                                    xtype:'textfield',
+                                    labelAlign:'top',
+                                    width:'25%',
+                                    fieldLabel:'Quotation No',
+                                    margin:8,
+                                    padding:8,
+                                    value:'ABC-CDE 21',
+                                    
+                                },
+                                {
+                                    xtype:'combobox',
+                                    store:storeCombobox,
+                                    labelAlign:'top',
+                                    fieldLabel:'Invoice To',
+                                    width:'25%',
+                                    margin:8,
+                                    padding:8,
+                                    value:'2',
+                                    displayField:'name',
+                                    valueField:'id'
+                                    
+                                },
+                            ]
                         },
                         {
-                            xtype:'textfield',
-                            labelAlign:'top',
-                            fieldLabel:'Attention Of',
-                            margin:8,
-                            padding:8,
-                            value:'John Smith ',
-                            
-                        },
-                        {
-                            xtype:'textfield',
-                            labelAlign:'top',
-                            fieldLabel:'Quotation No',
-                            margin:8,
-                            padding:8,
-                            value:'ABC-CDE 21',
-                            
-                        },
-                        {
-                            xtype:'combobox',
-                            store:storeCombobox,
-                            labelAlign:'top',
-                            fieldLabel:'Invoice To',
-                            margin:8,
-                            padding:8,
-                            value:'2',
-                            displayField:'name',
-                            valueField:'id'
-                            
-                        },
+                            xtype:'panel',
+                            width:'20%',
+                            layout:{
+                                type:'hbox'
+                            },
+                            items:[
+                                {
+                                    xtype:'combobox',
+                                    store:storeCombobox,
+                                    labelAlign:'top',
+                                    width:'100%',
+                                    fieldLabel:'Customer Contract',
+                                    margin:8,
+                                    padding:8,
+                                    value:'2',
+                                    displayField:'name',
+                                    valueField:'id'
+                                    
+                                },
+                            ]
+                        }
                     ]
                 },
                 {
@@ -139,19 +179,55 @@ Ext.define('Testing.view.main.Main', {
                         type:'hbox'
                     },
                     items:[
-                        
                         {
-                            xtype:'textfield',
-                            labelAlign:'top',
-                            width:'19%',
-                            fieldLabel:'Vendor Address',
-                            margin:8,
-                            padding:8,
-                            value:'ABC-CDE 21',
-                            
+                            xtype:'panel',
+                            width:'80%',
+                            style:{
+                                'border-right':'1px dotted',
+                            },  
+                            layout:{
+                                type:'hbox'
+                            },
+                            items:[
+                                
+                                {
+                                    xtype:'textfield',
+                                    labelAlign:'top',
+                                    fieldLabel:'Vendor Address',
+                                    width:'100%',
+                                    margin:8,
+                                    padding:8,
+                                    value:'ABC-CDE 21',
+                                    
+                                },
+                              
+                            ]
                         },
+                        {
+                            xtype:'panel',
+                            width:'20%',
+                            layout:{
+                                type:'hbox'
+                            },
+                            items:[
+                                {
+                                    xtype:'combobox',
+                                    store:storeCombobox,
+                                    labelAlign:'top',
+                                    width:'100%',
+                                    fieldLabel:'Customer PO No.',
+                                    margin:8,
+                                    padding:8,
+                                    value:'2',
+                                    displayField:'name',
+                                    valueField:'id'
+                                    
+                                },
+                            ]
+                        }
                     ]
-                }
+                },
+             
             ]
         })
         return form
