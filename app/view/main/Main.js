@@ -597,6 +597,11 @@ Ext.define('Testing.view.main.Main', {
                 }
             ],
             bbar:[
+                {
+                    xtype:'label',
+                    html:`Exchange Rate 1 USD = <span style="color:#545454;background-color:#F1F1F1;text-align:center;border-radius:3px;padding:8px;">3.6725</span>&nbsp AED`,
+
+                },
                 '->',
                 {
                     xtype:'button',
