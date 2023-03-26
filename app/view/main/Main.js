@@ -250,51 +250,148 @@ Ext.define('Testing.view.main.Main', {
     createGrid(){
         let me=this;
         let storeGrid= Ext.create('Ext.data.Store', {
-            fields:['description','qry','uom','unit_pr','discount','VAT_1',''],
+            fields:['description','qty','uom','unit_pr','discount','VAT_1','currency'],
             data : [
-                {description: 'Description',    qty: '1'},
-                {description: 'Description',    qty: '2'},
+                {description: 'Description',    qty: '1',uom:'1',unit_pr:'10000', discount:0,VAT_1:0,currency:'1'},
+                {description: 'Description',    qty: '2',uom:'1',unit_pr:'10000',discount:0,VAT_1:0,currency:'1'},
 
             ]
         });
         let columns=[
             {
                 text:'Description',
+                align:'center',
                 editor: me.createText(),              
                 dataIndex:'description',
                 width:130,
                 renderer(value){
-                    return `<div style="color:#545454;background-color:#E5E5E5;text-align:center;border-radius:3px;padding:4px;">${value}</div>`
+                    return `<div style="color:#545454;background-color:#F1F1F1;text-align:center;border-radius:3px;padding:8px;">${value}</div>`
                 }
             },
             {
                 text:'Qty',
+                dataIndex:'qty',
+                align:'center',
+                editor: {
+                    xtype: 'numberfield',
+                    emptyText:'Please fill',
+                },
                 width:'5%',
+                renderer(value){
+                    return `<div style="color:#545454;background-color:#F1F1F1;text-align:center;border-radius:3px;padding:8px;">${value}</div>`
+                }
             },
             {
                 text:'UOM',
+                align:'center',
+                dataIndex:'uom',
+                editor:me.createComboboxUOM(),
                 width:'6%',
+                renderer: function(value, metaData, record, rowIndex, colIndex, store, view) {
+                    let headerCt = view.headerCt;
+                    let nameColumn = headerCt.getHeaderAtIndex(colIndex);
+                    let nameEditor = nameColumn.getEditor();
+                    //return value
+                    console.log(value)
+                    var comboRecord = nameEditor.findRecordByValue(value);
+                    if (comboRecord) {
+                        return `
+                        <div style="color:#545454;background-color:#F1F1F1;text-align:center;border-radius:3px;padding:8px"> 
+                        <div class="arrow" style="float:right;width: 14px; height: 14px;display: inline;margin-leftt:8px;">&nbsp;</div>
+                            ${comboRecord.get(nameEditor.displayField)}
+                        </div>
+                        `
+                        return `
+                        <div style="display:inline;color:#545454;background-color:#E5E5E5;text-align:center;border-radius:3px;padding:4px;">${comboRecord.get(nameEditor.displayField)}
+                        <div class="arrow" style="float:left;width: 14px; height: 14px;display: inline;margin-right:4px;">&nbsp;</div>
+                        </div>
+                        `
+                       // return '<span>testing</span>' + comboRecord.get(nameEditor.displayField);
+
+                    }
+                    me._uom.getRange().forEach((val,i)=>{
+                        console.log(val)
+                        if(val.data.abbr===value){
+                            console.log(val.data.name)
+                            return `<div style="color:#545454;background-color:#F1F1F1;text-align:center;border-radius:3px;padding:8px;">${val.data.name}<div class="arrow"></div></div>`
+
+                        }
+                    })
+                }
             },
             {
                 text:'Unit Price',
+                dataIndex:'unit_pr',
+                editor: me.createText(),              
                 width:'8%',
+                renderer(value){
+                    return `<div style="color:#545454;background-color:#F1F1F1;text-align:center;border-radius:3px;padding:8px;">${value}</div>`
+                }
             },
         
             {
                 text:'Discount (%)',
-                width:'10%',
+                dataIndex:'discount',
+                editor: me.createText(),              
+                width:'7%',
+                renderer(value){
+                    return `<div style="color:#545454;background-color:#F1F1F1;text-align:center;border-radius:3px;padding:8px;">${value}</div>`
+                }
             },
             {
                 text:'VAT (%)',
+                dataIndex:'VAT_1',
+                editor: me.createText(),              
                 width:'5%',
+                renderer(value){
+                    return `<div style="color:#545454;background-color:#F1F1F1;text-align:center;border-radius:3px;padding:8px;">${value}</div>`
+                }
             },
             {
                 text:'',
                 width:'4%',
+                renderer: function(value, metaData, record, rowIndex, colIndex, store, view) {
+                    return `
+                    <div class="arrow-right" style="float:right;width: 20px; height: 20px;display: inline;margin-leftt:8px;">&nbsp;</div>
+                    `
+                }
             },
             {
                 text:'Currency',
-                width:'10%',
+                width:'7%',
+                editor:me.createComboboxCurrency(),
+                dataIndex:'currency',
+                renderer: function(value, metaData, record, rowIndex, colIndex, store, view) {
+                    let headerCt = view.headerCt;
+                    let nameColumn = headerCt.getHeaderAtIndex(colIndex);
+                    let nameEditor = nameColumn.getEditor();
+                    //return value
+                    console.log(value)
+                    var comboRecord = nameEditor.findRecordByValue(value);
+                    if (comboRecord) {
+                        return `
+                        <div style="color:#545454;background-color:#F1F1F1;text-align:center;border-radius:3px;padding:8px"> 
+                        <div class="arrow" style="float:right;width: 14px; height: 14px;display: inline;margin-leftt:8px;">&nbsp;</div>
+                            ${comboRecord.get(nameEditor.displayField)}
+                        </div>
+                        `
+                        return `
+                        <div style="display:inline;color:#545454;background-color:#E5E5E5;text-align:center;border-radius:3px;padding:4px;">${comboRecord.get(nameEditor.displayField)}
+                        <div class="arrow" style="float:left;width: 14px; height: 14px;display: inline;margin-right:4px;">&nbsp;</div>
+                        </div>
+                        `
+                       // return '<span>testing</span>' + comboRecord.get(nameEditor.displayField);
+
+                    }
+                    me._uom.getRange().forEach((val,i)=>{
+                        console.log(val)
+                        if(val.data.abbr===value){
+                            console.log(val.data.name)
+                            return `<div style="color:#545454;background-color:#F1F1F1;text-align:center;border-radius:3px;padding:8px;">${val.data.name}<div class="arrow"></div></div>`
+
+                        }
+                    })
+                }
             },
             {
                 text:'VAT Amount',
@@ -310,7 +407,7 @@ Ext.define('Testing.view.main.Main', {
             },
             {
                 text:'Charge To',
-                width:'10%',
+                width:'15%',
             },
             {
                 text:'',
@@ -338,5 +435,51 @@ Ext.define('Testing.view.main.Main', {
             emptyText:'Description',
         })
         return textfield
-    }
+    },
+    createComboboxUOM(){
+        let me=this
+        // The data store containing the list of states
+        me._uom = Ext.create('Ext.data.Store', {
+            fields: ['abbr', 'name'],
+            data : [
+                {"abbr":"1", "name":"SHP"},
+                {"abbr":"2", "name":"PHS"},
+                {"abbr":"3", "name":"LIK"}
+                //...
+            ]
+        });
+
+        // Create the combo box, attached to the states data store
+        let combobox=Ext.create('Ext.form.ComboBox', {
+            store: me._uom,
+            editable:false,
+            queryMode: 'local',
+            displayField: 'name',
+            valueField: 'abbr',
+        });    
+        return combobox
+    },
+    createComboboxCurrency(){
+        let me=this
+        // The data store containing the list of states
+        me._uom = Ext.create('Ext.data.Store', {
+            fields: ['abbr', 'name'],
+            data : [
+                {"abbr":"1", "name":"USD"},
+                {"abbr":"2", "name":"AED"},
+                {"abbr":"3", "name":"RPH"}
+                //...
+            ]
+        });
+
+        // Create the combo box, attached to the states data store
+        let combobox=Ext.create('Ext.form.ComboBox', {
+            store: me._uom,
+            editable:false,
+            queryMode: 'local',
+            displayField: 'name',
+            valueField: 'abbr',
+        });    
+        return combobox
+    }      
 });
