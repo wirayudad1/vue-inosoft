@@ -13,12 +13,51 @@ Ext.define('Testing.view.main.Main', {
             layout: 'vbox',
             items: [
                 this.createList(),
-                this.createGrid()
+                this.createGrid(),
+                {
+                    xtype:'toolbar',
+                    width:'100%',
+                    items:[
+                        '->',
+                        {
+                            xtype:'button',
+                            text:'Cancel',
+                            padding:8,
+                            width:150,
+                            style:{
+                                'background-image':'none',
+                                'background-color':'#FFFFFF',
+                                'border':'none',
+                            },
+                        },
+                        {
+                            xtype:'button',
+                            text:'Save as Draft',
+                            padding:8,
+                            width:150,
+                            style:{
+                                'background-image':'none',
+                                'background-color':'#FFFFFF',
+                            },
+                        },
+                        {
+                            xtype:'button',
+                            text:`<span style="color:#FFFFFF">Submit<span>`,
+                            padding:8,
+                            width:150,
+                            style:{
+                                'background-image':'none',
+                                'background-color':'#04BFAD',
+                            },
+                        }
+                    ]
+                }
             ],
-            // bbar:[
-            //     '->',
-            //
-            // ]
+            bbar:[
+                '->',
+            
+            
+            ]
            
         })
 
@@ -63,7 +102,21 @@ Ext.define('Testing.view.main.Main', {
                     padding:8,
                     value:'2',
                     displayField:'name',
-                    valueField:'id'
+                    valueField:'id',
+                //     tpl: Ext.create('Ext.XTemplate',
+                //     '<tpl for=".">',
+                //         '<div class="x-boundlist-item" style="border-bottom:1px solid #f0f0f0;">',
+                //         '<div><img src="icon/cargo-truck.png" width=14 height=14 style="margin-right:4px;"/>{name}</div>',
+                //     '</div>',
+                // '</tpl>'
+                // ),
+                //     tpl: '<tpl for=".">' +
+                //     '<div class="x-boundlist-item"><img src="{[this.getIcon(values)]}" class="icon"/> {name}</div>' +
+                //  '</tpl>',
+                    getIcon: function(values) {
+                        // return the URL of the icon based on the value of the combobox
+                        return 'icon/plus.png';
+                    }
                     
                 },
                 me.createForm()
@@ -249,11 +302,11 @@ Ext.define('Testing.view.main.Main', {
     },
     createGrid(){
         let me=this;
-        let storeGrid= Ext.create('Ext.data.Store', {
-            fields:['description','qty','uom','unit_pr','discount','VAT_1','currency'],
+        me.storeGrid= Ext.create('Ext.data.Store', {
+            fields:['id_data','description','qty','uom','unit_pr','discount','VAT_1','currency','VAT_2','subtotal','total','chargeto'],
             data : [
-                {description: 'Description',    qty: '1',uom:'1',unit_pr:'10000', discount:0,VAT_1:0,currency:'1'},
-                {description: 'Description',    qty: '2',uom:'1',unit_pr:'10000',discount:0,VAT_1:0,currency:'1'},
+                {id_data:'ext-232',description: '',    qty: '1',uom:'1',unit_pr:'10000', discount:0,VAT_1:0,currency:'1',VAT_2:0.00,subtotal:0.00,total:0.00,changeto:''},
+                {id_data:'ext-212',description: '',    qty: '2',uom:'1',unit_pr:'10000',discount:0,VAT_1:0,currency:'1',VAT_2:0.00,subtotal:0.00,total:0.00,changeto:''},
 
             ]
         });
@@ -263,8 +316,11 @@ Ext.define('Testing.view.main.Main', {
                 align:'center',
                 editor: me.createText(),              
                 dataIndex:'description',
-                width:130,
+                width:'15%',
                 renderer(value){
+                    if(!value){
+                        return `<div style="color:#545454;background-color:#F1F1F1;text-align:center;border-radius:3px;padding:8px;">Description</div>`
+                    }
                     return `<div style="color:#545454;background-color:#F1F1F1;text-align:center;border-radius:3px;padding:8px;">${value}</div>`
                 }
             },
@@ -383,7 +439,7 @@ Ext.define('Testing.view.main.Main', {
                        // return '<span>testing</span>' + comboRecord.get(nameEditor.displayField);
 
                     }
-                    me._uom.getRange().forEach((val,i)=>{
+                    me._currency.getRange().forEach((val,i)=>{
                         console.log(val)
                         if(val.data.abbr===value){
                             console.log(val.data.name)
@@ -395,23 +451,124 @@ Ext.define('Testing.view.main.Main', {
             },
             {
                 text:'VAT Amount',
-                width:'10%',
+                dataIndex:'VAT_2',
+                width:'6%',
+                editor:me.createNumber(),
+                renderer(value){
+                    return `<div style="color:#545454;background-color:#F1F1F1;text-align:center;border-radius:3px;padding:8px;">${value}</div>`
+                }
             },
             {
                 text:'Sub Total',
-                width:'10%',
+                dataIndex:'subtotal',
+                width:'6%',
+                editor:me.createNumber(),
+                renderer(value){
+                    return `<div style="color:#545454;background-color:#F1F1F1;text-align:center;border-radius:3px;padding:8px;">${value}</div>`
+                }
             },
             {
                 text:'Total',
                 width:'6%',
+                dataIndex:'total',
+                editor:me.createNumber(),
+                renderer(value){
+                    return `<div style="color:#545454;background-color:#F1F1F1;text-align:center;border-radius:3px;padding:8px;">${value}</div>`
+                }
             },
             {
                 text:'Charge To',
-                width:'15%',
+                width:'20%',
+                dataIndex:'charge',
+                editor:me.createComboboxCharge(),
+                renderer: function(value, metaData, record, rowIndex, colIndex, store, view) {
+                    let headerCt = view.headerCt;
+                    let nameColumn = headerCt.getHeaderAtIndex(colIndex);
+                    let nameEditor = nameColumn.getEditor();
+                    //return value
+                    console.log(value)
+                    var comboRecord = nameEditor.findRecordByValue(value);
+                    if (comboRecord) {
+                        return `
+                        <div style="color:#545454;background-color:#F1F1F1;text-align:center;border-radius:3px;padding:8px"> 
+                        <div class="arrow" style="float:right;width: 14px; height: 14px;display: inline;margin-leftt:8px;">&nbsp;</div>
+                            ${comboRecord.get(nameEditor.displayField)}
+                        </div>
+                        `
+                        return `
+                        <div style="display:inline;color:#545454;background-color:#E5E5E5;text-align:center;border-radius:3px;padding:4px;">${comboRecord.get(nameEditor.displayField)}
+                        <div class="arrow" style="float:left;width: 14px; height: 14px;display: inline;margin-right:4px;">&nbsp;</div>
+                        </div>
+                        `
+                       // return '<span>testing</span>' + comboRecord.get(nameEditor.displayField);
+
+                    }
+                    if(!value){
+                        return `     
+                         <div style="color:#545454;background-color:#F1F1F1;text-align:center;border-radius:3px;padding:8px"> 
+                        <div class="arrow" style="float:right;width: 14px; height: 14px;display: inline;margin-leftt:8px;">&nbsp;</div>
+                            Select an Option
+                        </div>`
+                    }
+                    me._charge.getRange().forEach((val,i)=>{
+                        console.log(val)
+                        if(val.data.abbr===value){
+                            console.log(val.data.name)
+                            return `<div style="color:#545454;background-color:#F1F1F1;text-align:center;border-radius:3px;padding:8px;">${val.data.name}<div class="arrow"></div></div>`
+
+                        }
+                    })
+                }
             },
             {
                 text:'',
                 width:'5%',
+                renderer: function(val,meta,rec) {
+                    // generate unique id for an element
+                    var id = Ext.id();
+                    Ext.defer(function() {
+                        Ext.widget('button', {
+                            renderTo: Ext.query("#"+id)[0],
+                            iconCls:'minus',
+                            height:31,
+                            width:31,
+                            style:{
+                                'background-color': '#E5E5E5',
+                                'background-image': 'none',
+                                'border-color':'#E5E5E5',
+                            },
+                            handler: function(button) {
+                                let ticket=rec.data['id_data']
+                                let storeSite=me.storeGrid
+                               // console.log(store,me._grid)
+                                // console.log(me.data_takeout,ticket)
+                            
+                                // let databaru=me.removeJSONobject(me.data_takeout,ticket)
+                                // console.log(me.data_takeout,databaru)
+                                storeSite.removeAt(storeSite.find('id_data', ticket))
+                                // store.each(function(record, index) {
+                                //     console.log(index)
+                                //     record.set(me._grid.columns[0].dataIndex, index + 1);
+                                // });
+                                // storeSite.getRange().forEach((val,index)=>{
+                                //     if(val.data.site_group_id===rec.data.site_group_id){
+                                //         val.data.asset_list=[]
+                                //         store.getRange().forEach((v,i)=>{
+                                //             val.data.asset_list.push(v.data)
+                                //         })
+                                //     }
+                                // })
+    
+                             },
+                             listeners:{
+                                afterrender(obj){
+                                   // console.log(obj.up('grid'))
+                                }
+                             }
+                        });
+                    }, 50);
+                    return Ext.String.format('<div id="{0}"></div>', id);
+                }
             },
 
         ]
@@ -419,12 +576,40 @@ Ext.define('Testing.view.main.Main', {
             width:'100%',
             cls:'gridColumn',
             columns:columns,
-            store:storeGrid,
+            store:me.storeGrid,
             plugins: {
                 ptype: 'cellediting',
                 clicksToEdit: 1,
               
             },
+            tbar:[
+                {
+                    xtype:'label',
+                    width:150,
+                    html:`
+                    <div style="color:#37DEDC;background-color:#FFFFFF;font-weight:bold;text-align:center;border-radius:3px;margin-left:8px;padding:8px"> 
+                    <div class="arrow-down-green" style="float:right;width: 14px; height: 14px;display: inline;margin-left:0px;">&nbsp;</div>
+                        Cost Detail
+                    </div>
+                    `
+                    
+
+                }
+            ],
+            bbar:[
+                '->',
+                {
+                    xtype:'button',
+                    width:31,
+                    height:31,
+                    margin:'0 40 0 0',
+                    style:{
+                        'background-image':'none',
+                        'background-color':'#04BFAD',
+                    },
+                    iconCls:'plus-white',
+                }
+            ]
             
         })
         return grid
@@ -433,6 +618,13 @@ Ext.define('Testing.view.main.Main', {
         let textfield=Ext.create('Ext.form.field.Text',{
             fieldStyle: 'background-color: #F1F1F1;margin:0px;',
             emptyText:'Description',
+        })
+        return textfield
+    },
+    createNumber(){
+        let textfield=Ext.create('Ext.form.field.Number',{
+            fieldStyle: 'background-color: #F1F1F1;margin:0px;',
+            emptyText:'Please Fill',
         })
         return textfield
     },
@@ -445,7 +637,6 @@ Ext.define('Testing.view.main.Main', {
                 {"abbr":"1", "name":"SHP"},
                 {"abbr":"2", "name":"PHS"},
                 {"abbr":"3", "name":"LIK"}
-                //...
             ]
         });
 
@@ -462,7 +653,7 @@ Ext.define('Testing.view.main.Main', {
     createComboboxCurrency(){
         let me=this
         // The data store containing the list of states
-        me._uom = Ext.create('Ext.data.Store', {
+        me._currency = Ext.create('Ext.data.Store', {
             fields: ['abbr', 'name'],
             data : [
                 {"abbr":"1", "name":"USD"},
@@ -474,12 +665,34 @@ Ext.define('Testing.view.main.Main', {
 
         // Create the combo box, attached to the states data store
         let combobox=Ext.create('Ext.form.ComboBox', {
-            store: me._uom,
+            store: me._currency,
             editable:false,
             queryMode: 'local',
             displayField: 'name',
             valueField: 'abbr',
         });    
         return combobox
-    }      
+    },
+    createComboboxCharge(){
+        let me=this
+        // The data store containing the list of states
+        me._charge = Ext.create('Ext.data.Store', {
+            fields: ['abbr', 'name'],
+            data : [
+                {"abbr":"1", "name":"Logistic"},
+                {"abbr":"2", "name":"Donation"},
+                //...
+            ]
+        });
+
+        // Create the combo box, attached to the states data store
+        let combobox=Ext.create('Ext.form.ComboBox', {
+            store: me._charge,
+            editable:false,
+            queryMode: 'local',
+            displayField: 'name',
+            valueField: 'abbr',
+        });    
+        return combobox
+    }          
 });

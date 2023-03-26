@@ -14,9 +14,25 @@
     background-image: url("icon/arrow.png");
     background-size: 14px; background-repeat: no-repeat; background-position: top 0px center;
 }
+.arrow-down-green{
+    background-image: url("icon/arrow-down-green.png");
+    background-size: 14px; background-repeat: no-repeat; background-position: top 2px center;
+}
 .arrow-right{
     background-image: url("icon/right-arrow.png");
     background-size: 18px; background-repeat: no-repeat; background-position: top 3px center;
+}
+.minus{
+    background-image: url("icon/minus-sign.png");
+    background-size: 18px; background-repeat: no-repeat; background-position: top -2px center;
+}
+.plus-white{
+    background-image: url("icon/plus.png");
+    background-size: 18px; background-repeat: no-repeat; background-position: top -2px center;
+}
+.truck{
+    background-image: url("icon/cargo-truck.png");
+    background-size: 18px; background-repeat: no-repeat; background-position: top 2px center;
 }
 .comboArrow .x-form-trigger-default {
     background-color: #F1F1F1;
