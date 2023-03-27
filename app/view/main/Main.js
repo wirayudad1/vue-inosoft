@@ -5,7 +5,7 @@
  *
  * TODO - Replace this content of this view to suite the needs of your application.
  */
-Ext.define('Testing.view.main.Main', {
+ Ext.define('Testing.view.main.Main', {
     extend: 'Ext.panel.Panel',
     initComponent () {
         let me=this;
@@ -562,6 +562,7 @@ Ext.define('Testing.view.main.Main', {
                              },
                              listeners:{
                                 afterrender(obj){
+                                    console.log('testing')
                                    // console.log(obj.up('grid'))
                                 }
                              }
@@ -613,6 +614,11 @@ Ext.define('Testing.view.main.Main', {
                         'background-color':'#04BFAD',
                     },
                     iconCls:'plus-white',
+                    handler(button){
+                        me.storeGrid.add(
+                            {id_data:'ext-232',description: '',    qty: '1',uom:'1',unit_pr:'10000', discount:0,VAT_1:0,currency:'1',VAT_2:0.00,subtotal:0.00,total:0.00,changeto:''},
+                        )
+                    }
                 }
             ]
             
